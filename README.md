@@ -2,25 +2,26 @@
 
 > Dockerfiles for the [fish shell](https://fishshell.com)
 
-## Image usage
+## Thanks
 
-The default Docker command is `fish`, allowing for interactive shell usage:
+* This fork aim to be a reboot but with ideas from @andreiborisov's [docker-fish](https://github.com/andreiborisov/docker-fish)
+
+## Usage
+
+Default command is `fish` shell:
 
 ```console
-$ docker run -it --rm andreiborisov/fish:latest
-Welcome to fish, the friendly interactive shell
-Type `help` for instructions on how to use fish
-nemo@8cee1f8493c3 ~>
+docker run -it --rm pure-fish/docker-fish:latest
 ```
 
-To invoke `fish` with flags just supply them as arguments:
+Passing options to `fish`:
 
 ```console
-$ docker run -it --rm andreiborisov/fish:3.0 --version
+$ docker run -it --rm pure-fish/docker-fish:latest --version
 fish, version 3.0.2
 ```
 
-You can also run fish commands directly (without the need to specify `-c` or `--command` fish flag):
+Running command in `fish`:
 
 ```console
 $ docker run -it --rm andreiborisov/fish:3 fisher list
@@ -28,15 +29,15 @@ jorgebucaran/fisher
 jorgebucaran/fishtape
 ```
 
-### Testing fish packages
+## How to dev
 
-You can use these images to run [Fishtape](https://github.com/jorgebucaran/fishtape) tests on multiple fish versions. Check out [fish-plugin template repo](https://github.com/andreiborisov/fish-plugin) for the full example on how to do that.
+**requirement:** [just][just].
 
-## Supported fish versions
+```console
+❯ just FISH_VERSION=3.0 build  
+```
 
-There is an image for each fish version starting from `3.0.0` and also tags for each latest patch, minor and major release. Check out [Docker Hub](https://hub.docker.com/repository/docker/andreiborisov/fish/tags) for the full list of currently available tags.
-
-## What’s included?
+## Installed Packages
 
 * [Fisher](https://github.com/jorgebucaran/fisher)
 * [Fishtape](https://github.com/jorgebucaran/fishtape)
@@ -44,3 +45,5 @@ There is an image for each fish version starting from `3.0.0` and also tags for 
 ## License
 
 [MIT](LICENSE)
+
+[just]: https://github.com/casey/just

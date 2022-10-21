@@ -3,4 +3,4 @@ updates:
   - package-ecosystem: "docker"
     directory: "/fish"
     schedule:
-      interval: "daily"
+      interval: "weekly"
