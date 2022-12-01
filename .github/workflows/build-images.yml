@@ -31,6 +31,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            pure-fish/docker-fish
+            ghcr.io/pure-fish/docker-fish
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -43,12 +61,13 @@ jobs:
       - name: Build fish:${{ matrix.version.fish }} image
         uses: docker/build-push-action@v3
         with:
-          context: .
           push: true
+          context: .
           file: ./Dockerfile
           build-contexts: |
             alpine=docker-image://alpine:${{ matrix.version.alpine }}
-          tags: ${{ matrix.version.fish }}
+          tags: ${{ matrix.version.fish }},${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
 
       - name: Test installed version match expected ${{ matrix.version.fish }}
