@@ -51,4 +51,5 @@ jobs:
           tags: ${{ matrix.version.fish }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
 
-      # - name: Test installed version match expected ${{ matrix.version.fish }}
+      - name: Test installed version match expected ${{ matrix.version.fish }}
+        run: docker run --rm ${{ matrix.version.fish }} 'fish --version' | grep ${{ matrix.version.fish }}
