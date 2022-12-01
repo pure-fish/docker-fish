@@ -44,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          # file: ./images/fish-${{ matrix.version.fish }}.Dockerfile
+          push: true
           file: ./Dockerfile
           build-contexts: |
             alpine=docker-image://alpine:${{ matrix.version.alpine }}
