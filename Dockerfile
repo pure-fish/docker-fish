@@ -8,7 +8,7 @@ RUN apk add --no-cache \
     git \
     fish
 
-RUN printf "\nUsing \e[38;5;27mFish-%s\e[m\n\n" $(fish --version)
+RUN printf "\nUsing \e[38;5;27m%s\e[m\n\n" "$(fish --version)"
 
 ENTRYPOINT ["fish", "-c"]
 CMD [ "fish" ]
