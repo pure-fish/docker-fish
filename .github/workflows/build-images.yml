@@ -4,3 +4,51 @@ on:
     paths:
       - '.github/workflows/**'
       - 'images'
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - reopened
+  #     - synchronize
+  #     - ready_for_review
+
+jobs:
+  build-image:
+    name: Build and push fish image
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version:
+          [
+            { fish: 3.0.2, alpine: 3.11 },
+            { fish: 3.1.2, alpine: 3.13 },
+            { fish: 3.2.2, alpine: 3.14 },
+            { fish: 3.3.1, alpine: 3.15 },
+            { fish: 3.4.1, alpine: 3.16 },
+            { fish: 3.5.1, alpine: 3.17 },
+          ]
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build fish:${{ matrix.version.fish }} image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          # file: ./images/fish-${{ matrix.version.fish }}.Dockerfile
+          file: ./Dockerfile
+          build-contexts: |
+            alpine=docker-image://alpine:${{ matrix.version.alpine }}
+          tags: ${{ matrix.version.fish }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+
+      # - name: Test installed version match expected ${{ matrix.version.fish }}
