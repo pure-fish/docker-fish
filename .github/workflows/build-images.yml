@@ -4,12 +4,12 @@ on:
     paths:
       - '.github/workflows/**'
       - 'images'
-  # pull_request:
-  #   types:
-  #     - opened
-  #     - reopened
-  #     - synchronize
-  #     - ready_for_review
+    branches:
+      - 'main'
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 jobs:
   build-image:
@@ -17,13 +17,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [
+        version:
+          [
             { fish: 3.0.2, alpine: 3.11 },
-            # { fish: 3.1.2, alpine: 3.13 },
-            # { fish: 3.2.2, alpine: 3.14 },
-            # { fish: 3.3.1, alpine: 3.15 },
-            # { fish: 3.4.1, alpine: 3.16 },
-            # { fish: 3.5.1, alpine: 3.17 },
+            { fish: 3.1.2, alpine: 3.13 },
+            { fish: 3.2.2, alpine: 3.14 },
+            { fish: 3.3.1, alpine: 3.15 },
+            { fish: 3.4.1, alpine: 3.16 },
+            { fish: 3.5.1, alpine: 3.17 },
           ]
       fail-fast: false
     steps:
@@ -37,16 +38,11 @@ jobs:
           # list of Docker images to use as base name for tags
           images: |
             purefish/docker-fish
-          # ghcr.io/pure-fish/docker-fish
+          # ghcr.io/pure-fish/docker-fish # need token
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
             type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
+            type=semver,pattern={{version}},value=${{matrix.version.fish}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -73,4 +69,8 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
 
       - name: Test installed version match expected ${{ matrix.version.fish }}
-        run: docker run --rm ${{ matrix.version.fish }} 'fish --version' | grep ${{ matrix.version.fish }}
+        run: |
+          docker run \
+            --rm \
+            purefish/docker-fish:${{ matrix.version.fish }} \
+              'fish --version | grep ${{ matrix.version.fish }}'
