@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 # Used for Github action 'docker/build-push-action@v3' 
 #   to specify the image version, cf. https://docs.docker.com/engine/reference/commandline/buildx_build/#build-context
 FROM alpine:latest

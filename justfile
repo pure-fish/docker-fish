@@ -1,12 +1,15 @@
 set shell := ["fish", "-c"]
 
-build ALPINE_VERSION FISH_VERSION:
-    docker build \
-        --file ./images/Dockerfile-{{FISH_VERSION}} \
-        --build-arg ALPINE_VERSION={{ALPINE_VERSION}} \
-        --build-arg FISH_VERSION={{FISH_VERSION}} \
-        --tag=fish-{{FISH_VERSION}} \
-        .
+verbosity := if "hello" != "goodbye" { "xyz" } else { "abc" }
+build ALPINE_VERSION FISH_VERSION verbose="verbose":
+    @printf "verbosity: %s\n\n  " {{ verbose }}
+    docker buildx build \
+        {{ if verbose == "verbose" {""} else { "--quiet" } }} \
+        --build-context alpine=docker-image://alpine:{{ ALPINE_VERSION }} \
+        --file ./Dockerfile \
+        --tag=fish-{{ FISH_VERSION }} \
+        ./
+
 run FISH_VERSION:
     docker run \
         --interactive \
