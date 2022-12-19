@@ -13,5 +13,20 @@ run:
         --tty \
     fish-{{FISH_VERSION}}:latest
 
-build-3_0: (build "3.11" "3.0")
-run-3_0: (run "3.0")
+build-3-0-2: (build "3.11" "3.0.2")
+run-3-0-2: (run "3.0.2")
+
+build-3-1-2: (build "3.13" "3.1.2")
+run-3-1-2: (run "3.1.2")
+
+build-3-2-2: (build "3.14" "3.2.2")
+run-3-2-2: (run "3.2.2")
+
+build-3-3-1: (build "3.15" "3.3.1")
+run-3-3-1: (run "3.3.1")
+
+build-3-4-1: (build "3.16" "3.4.1")
+run-3-4-1: (run "3.4.1")
+
+build-3-5-1: (build "3.17" "3.5.1")
+run-3-5-1: (run "3.5.1")
