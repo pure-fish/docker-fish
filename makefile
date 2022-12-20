@@ -3,7 +3,7 @@ SHELL = /usr/bin/fish
 CONTAINER_USER = nemo
 
 print-fish-version:
-	printf "\nUsing \e[38;5;27mFish %s\e[m\n\n" "$$(fish --version | awk '{print $$NF}')"
+	printf "\nUsing \e[38;5;27mFish %s\e[m\n\n" "(fish --version | awk '{print $$NF}')"
 
 add-nemo-user:
 	addgroup \
@@ -25,8 +25,8 @@ install-fisher:
 	curl -sL git.io/fisher \
     | source \
 	&& fisher install jorgebucaran/fisher \
-	&& printf "\nUsing \e[38;5;27mFisher %s\e[m\n\n" "$$(fisher --version | awk '{print $$NF}')"
+	&& printf "\nUsing \e[38;5;27mFisher %s\e[m\n\n" "(fisher --version | awk '{print $$NF}')"
 
 install-fishtape:
 	fisher install jorgebucaran/fishtape \
-	&& printf "\nUsing \e[38;5;27mFishtape %s\e[m\n\n" "$$(fishtape --version | awk '{print $$NF}')"
+	&& printf "\nUsing \e[38;5;27mFishtape %s\e[m\n\n" "(fishtape --version | awk '{print $$NF}')"
