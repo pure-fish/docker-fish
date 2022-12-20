@@ -25,4 +25,4 @@ RUN make install-fisher
 RUN make install-fishtape
 
 ENTRYPOINT ["fish", "-c"]
-CMD [ "fish", "--version"]
+CMD [ "fish"]
