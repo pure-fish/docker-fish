@@ -1,6 +1,5 @@
 set shell := ["fish", "-c"]
 
-verbosity := if "hello" != "goodbye" { "xyz" } else { "abc" }
 build ALPINE_VERSION FISH_VERSION verbose="verbose":
     @printf "verbosity: %s\n\n  " {{ verbose }}
     docker buildx build \
