@@ -5,11 +5,13 @@
 FROM alpine:latest
 
 # Common runtime dependencies of the fish shell
+# We need bash for devcontainer's feature installation scripts, e.g. https://github.com/devcontainers/features/tree/main/src/git
 RUN apk add --no-cache \
     coreutils \
     curl \
     make \
     git \
+    bash \
     fish
 
 WORKDIR /workspace
