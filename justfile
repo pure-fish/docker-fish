@@ -15,6 +15,12 @@ run FISH_VERSION:
         --tty \
     fish-{{ FISH_VERSION }}:latest
 
+test FISH_VERSION:
+    docker run \
+        --rm \
+        fish-{{ FISH_VERSION }} \
+        'fish --version | grep {{ FISH_VERSION }}'
+
 build-3-0-2 verbose="false": (build "3.11" "3.0.2" verbose)
 run-3-0-2: (run "3.0.2")
 
