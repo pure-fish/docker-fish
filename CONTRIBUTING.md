@@ -15,6 +15,13 @@ We provide aliases for already supported version:
 build-3-0-2  build-3-1-2  build-3-2-2  build-3-3-1  build-3-4-1  build-3-5-1
 ```
 
+## Test version
+
+Check provide version match `fish --version` output:
+
+    just test 3.5.1
+
+
 ## Add a new `Alpine`/`Fish`
 
 When a **new Fish version is available through alpine**, you can use the `build` recipe create a new image:
