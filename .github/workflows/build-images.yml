@@ -42,7 +42,6 @@ jobs:
           # ghcr.io/pure-fish/docker-fish # need token
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=ref,event=branch
             type=semver,pattern={{version}},value=${{matrix.version.fish}}
           flavor: |
             latest=false
