@@ -34,6 +34,7 @@ We provide the following versions of Fish, thanks to Alpine package. Simplify sp
 | `3.3.1` | `3.15` |
 | `3.4.1` | `3.16` |
 | `3.5.1` | `3.17` |
+| `3.6.0` | `edge` |
 
 ## Installed Packages
 
