@@ -26,14 +26,14 @@ We provide the following versions of Fish, thanks to Alpine package. Simplify sp
 ❯ docker run --interactive --tty --rm purefish/docker-fish:3.5.1
 ```
 
-| Fish    | Alpine |
-| ------- | ------ |
+| Fish    | Alpine | |
+| ------- | ------ | --- |
 | `3.0.2` | `3.11` |
 | `3.1.2` | `3.13` |
 | `3.2.2` | `3.14` |
 | `3.3.1` | `3.15` |
 | `3.4.1` | `3.16` |
-| `3.5.1` | `3.17` |
+| `3.5.1` | `3.17`, `latest`
 | `3.6.0` | `edge` |
 
 ## Installed Packages
