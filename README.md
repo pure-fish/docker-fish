@@ -1,4 +1,9 @@
-# docker-fish [![Docker pulls](https://img.shields.io/docker/pulls/purefish/docker-fish.svg?logo=docker&label=pulls&color=2396ed)](https://hub.docker.com/r/purefish/docker-fish) [![Build](https://github.com/pure-fish/docker-fish/actions/workflows/build-images.yml/badge.svg)](https://github.com/pure-fish/docker-fish/actions/workflows/build-images.yml)
+# docker-fish 
+[![docker-pull]](https://hub.docker.com/r/purefish/docker-fish) 
+[![ci-status]][ci-link]
+![docker-size] 
+[![sponsors]][sponsor-link]
+
 
 > Docker images for the [Fish shell][fish] projects to test in control environment
 
@@ -62,3 +67,10 @@ We provide the following versions of Fish, thanks to Alpine package. Simplify sp
 [Dockerfile]: ./Dockerfile
 [CONTRIBUTING.md]: ./CONTRIBUTING.md
 [RELEASE.md]: ./RELEASE.md
+
+[docker-pull]: https://img.shields.io/docker/pulls/purefish/docker-fish.svg?style=flat-square&logo=docker&label=pulls&color=2396ed
+[docker-size]: https://img.shields.io/docker/image-size/purefish/docker-fish?label=size&style=flat-square "Docker Image Size (latest by date)"
+[ci-link]: <https://github.com/pure-fish/pure/actions> "Github CI"
+[ci-status]: https://img.shields.io/github/actions/workflow/status/pure-fish/docker-fish/.github/workflows/build-images.yml?style=flat-square
+[sponsors]: https://img.shields.io/github/sponsors/edouard-lopez?label=💰&style=flat-square "GitHub Sponsors"
+[sponsor-link]: https://github.com/sponsors/edouard-lopez/ "Become a sponsor"
