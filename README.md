@@ -1,9 +1,9 @@
-# docker-fish 
-[![docker-pull]](https://hub.docker.com/r/purefish/docker-fish) 
-[![ci-status]][ci-link]
-![docker-size] 
-[![sponsors]][sponsor-link]
+# docker-fish
 
+[![docker-pull]](https://hub.docker.com/r/purefish/docker-fish)
+[![ci-status]][ci-link]
+![docker-size]
+[![sponsors]][sponsor-link]
 
 > Docker images for the [Fish shell][fish] projects to test in control environment
 
@@ -32,15 +32,13 @@ We provide the following versions of Fish, thanks to Alpine package. Simplify sp
 ```
 
 <!-- see: https://pkgs.alpinelinux.org/packages?name=fish&branch=edge&repo=&arch=&maintainer= -->
-| Fish    | Alpine |
-| ------- | ------ | 
-| `3.0.2` | `3.11` |
-| `3.1.2` | `3.13` |
-| `3.2.2` | `3.14` |
-| `3.3.1` | `3.15` |
-| `3.4.1` | `3.16` |
-| `3.5.1` | `3.17`, `latest`
-| `3.6.0` | `edge` |
+| Fish    | Alpine           |
+| ------- | ---------------- |
+| `3.0.2` | `3.11`           |
+| `3.1.2` | `3.13`           |
+| `3.2.2` | `3.14`           |
+| `3.3.1` | `3.15`           |
+| `3.4.1` | `3.16`           |
 | `3.5.1` | `3.17`           |
 | `3.6.1` | `3.18`, `latest` |
 
