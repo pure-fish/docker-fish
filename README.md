@@ -31,6 +31,7 @@ We provide the following versions of Fish, thanks to Alpine package. Simplify sp
 ❯ docker run --interactive --tty --rm purefish/docker-fish:3.5.1
 ```
 
+<!-- see: https://pkgs.alpinelinux.org/packages?name=fish&branch=edge&repo=&arch=&maintainer= -->
 | Fish    | Alpine |
 | ------- | ------ | 
 | `3.0.2` | `3.11` |
@@ -40,6 +41,10 @@ We provide the following versions of Fish, thanks to Alpine package. Simplify sp
 | `3.4.1` | `3.16` |
 | `3.5.1` | `3.17`, `latest`
 | `3.6.0` | `edge` |
+| `3.5.1` | `3.17`           |
+| `3.6.1` | `3.18`, `latest` |
+
+<!-- | `3.6.1` | `edge`           | -->
 
 ## Installed Packages
 
