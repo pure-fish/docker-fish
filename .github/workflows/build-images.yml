@@ -3,7 +3,6 @@ on:
   push:
     paths:
       - ".github/workflows/**"
-      - "images"
     branches:
       - "main"
   pull_request:
