@@ -33,6 +33,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Detect latest item from matrix
+        id: detect-latest-tag
+        run: echo "IS_LATEST=$([ $(expr ${{ strategy.job-index }} + 1) = ${{ strategy.job-total }} ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5.5.0
@@ -44,6 +48,7 @@ jobs:
           # generate Docker tags based on the following events/attributes
           tags: |
             type=semver,pattern={{version}},value=${{matrix.version.fish}}
+            type=raw,value=latest,enable=${{ steps.detect-latest-tag.outputs.IS_LATEST }}
           flavor: |
             latest=false
 
