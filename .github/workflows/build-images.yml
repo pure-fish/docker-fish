@@ -25,7 +25,7 @@ jobs:
             { fish: 3.5.1, alpine: 3.17 },
             { fish: 3.6.1, alpine: 3.18 },
             { fish: 3.6.3, alpine: 3.19 },
-            { fish: 3.7.0, alpine: "edge" },
+            { fish: 3.7.1, alpine: 3.21 },
             # { fish: 3.6.1, alpine: "edge" }, # priorize latest alpine version
           ]
       fail-fast: false

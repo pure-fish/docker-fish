@@ -45,8 +45,8 @@ run-3-6-1: (run "3.6.1")
 build-3-6-3 verbose="false": (build "3.19" "3.6.3" verbose)
 run-3-6-3: (run "3.6.3")
 
-build-3-7-0 verbose="false": (build "edge" "3.7.0" verbose)
-run-3-7-0: (run "3.7.0")
+build-3-7-1 verbose="false": (build "3.21" "3.7.1" verbose)
+run-3-7-1: (run "3.7.1")
 
 # build-3-6-2 verbose="false": (build "edge" "3.6.2" verbose)
 # run-3-6-2: (run "3.6.2")
