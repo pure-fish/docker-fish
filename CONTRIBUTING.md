@@ -1,72 +1,128 @@
 # Contributing Guide
 
-Alpine images already [provide a `fish` package][alpine-fish] from their repository so we leverage that.
+This project supports building Fish Docker images in two ways:
+1. **Package installation**: Using pre-built Fish packages from Alpine repositories (faster)
+2. **Source compilation**: Building Fish from GitHub source archives (supports any released version)
 
-## Requirement
+## Requirements
 
-* [just] (a modern `make`-like system).
+* [just] (a modern `make`-like system)
+* Docker with buildx support
 
-## Build supported versions
+## Building Fish Versions
 
-We provide aliases for already supported version:
+The `build` recipe takes the following arguments:
 
-```console
-❯ just build-<TAB>
-build-3-0-2  build-3-1-2  build-3-2-2  build-3-3-1  build-3-4-1  build-3-5-1
+| Argument           | Description                    | Default   | Notes                        |
+| ------------------ | ------------------------------ | --------- | ---------------------------- |
+| `FISH_VERSION`     | Fish version to build          | required  | e.g., "4.0.2", "4.1.1"      |
+| `ALPINE_VERSION`   | Alpine base image version      | required  | e.g., "3.22", "edge"        |
+| `BUILD_FROM_SOURCE`| Build method                   | "false"   | "true" for source build      |
+| `verbose`          | Build output verbosity         | "false"   | "verbose" for detailed logs  |
+
+### Build from Alpine Package (Recommended)
+
+For Fish versions available in Alpine repositories:
+
+```fish
+# Build Fish 4.0.2 from Alpine 3.22 package
+just build 4.0.2 3.22
+
+# Build from source with verbose output
+just build 4.0.2 3.22 false verbose
 ```
 
-## Test version
+### Build from Source
 
-Check provide version match `fish --version` output:
+For newer Fish versions not yet available in Alpine packages:
 
-    just test 3.5.1
+```fish
+# Build Fish 4.1.1 from source
+just build 4.1.1 edge true
 
-
-## Add a new `Alpine`/`Fish`
-
-When a **new Fish version is available through alpine**, you can use the `build` recipe create a new image:
-
-```console
-❯ just build "edge" "3.5.1-r2"
+# Build with verbose output  
+just build 4.1.1 edge true verbose
 ```
 
-The `build` recipe takes 3 arguments:
+## Testing Versions
 
-| Argument         | Description                | Need                   |
-| ---------------- | -------------------------- | ---------------------- |
-| `ALPINE_VERSION` | to use as base image       | **required**           |
-| `FISH_VERSION`   | to tag the resulting image | _optional_<sup>†</sup> |
-| `verbose`        | debug level                | _optional_             |
+Verify that the built image contains the expected Fish version:
 
-<sup>†</sup> Required in the CI build process.
-
-## Build Unsupported versions
-
-This is **not yet supported**, but we are open for PR! :heart:
-
-### Proposal
-
-:bulb: An idea would be to add a hook in the [Dockerfile]. e.g.:
-
-```Dockerfile
-ARG FISH_GIT_SHA=""
-…
-RUN [ -n "${FISH_GIT_SHA}" ] && make install-fish-from-source ${FISH_GIT_SHA}
+```fish
+# Test Fish 4.0.2 built on Alpine 3.22
+just test 4.0.2 3.22
 ```
 
-And
+The test command will:
 
-```make
-install-fish-from-source:
-    git clone --depth 1 <fish-repo-url>@${FISH_FROM_SOURCE_GIT_SHA}
-    <build steps>
+* Show expected vs actual Fish versions with color coding
+* Display ✓ VERSION MATCH for successful matches  
+* Display ✗ VERSION MISMATCH for failures
+* Handle missing Docker images gracefully
+
+## Adding New Fish Versions
+
+### For Versions Available in Alpine
+
+When Alpine releases a new Fish package, add it to the GitHub Actions matrix in `.github/workflows/build-images.yml`:
+
+```yaml
+{ fish: 4.0.7, alpine: "edge" }
 ```
+
+### For Versions Not Yet in Alpine
+
+For newer Fish versions, use source builds in the matrix:
+
+```yaml
+{ fish: 4.2.0, alpine: "edge", source: true }
+```
+
+The build system will automatically:
+
+* Download the source archive from GitHub releases
+* Compile Fish with all required dependencies (including Rust for newer versions)
+* Create a Docker image with the specified Fish version
+
+### Manual Local Builds
+
+You can also build any Fish version locally:
+
+```fish
+# Build latest Fish from source
+just build 4.1.1 edge true
+
+# Build specific older version from package
+just build 3.7.1 3.21 false
+```
+
+## Technical Details
+
+### Build Methods
+
+The Dockerfile supports two installation methods controlled by the `BUILD_FROM_SOURCE` argument:
+
+* **Package method** (`BUILD_FROM_SOURCE=false`): Fast builds using Alpine's pre-built Fish packages
+* **Source method** (`BUILD_FROM_SOURCE=true`): Compiles Fish from GitHub release archives
+
+### Multi-stage Build
+
+The build process uses Docker multi-stage builds:
+
+1. **Build stage**: Downloads and compiles Fish from source (when needed)
+2. **Final stage**: Creates minimal runtime image with Fish installed
+
+### Source Build Dependencies
+
+When building from source, the following dependencies are installed:
+
+* Standard build tools (build-base, cmake, make)
+* Fish-specific libraries (ncurses-dev, pcre2-dev, gettext-dev)
+* Rust and Cargo (required for Fish 4.1+ versions)
 
 ## Release
 
 See [RELEASE.md].
 
 [just]: https://github.com/casey/just
-[alpine-fish]: https://pkgs.alpinelinux.org/packages?name=fish&repo=&arch=
-[Dockerfile]: ./Dockerfile
 [RELEASE.md]: ./RELEASE.md

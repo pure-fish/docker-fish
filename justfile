@@ -1,55 +1,35 @@
 set shell := ["fish", "-c"]
 
-build ALPINE_VERSION FISH_VERSION verbose="verbose":
+# Internal build recipe (prefixed with _ to indicate private)
+build FISH_VERSION ALPINE_VERSION BUILD_FROM_SOURCE="false" verbose="false":
+    @printf "Building Fish {{ FISH_VERSION }} from {{ if BUILD_FROM_SOURCE == "true" { "source" } else { "package" } }}\n"
     @printf "verbosity: %s\n\n  " {{ verbose }}
     docker buildx build \
         {{ if verbose == "verbose" {""} else { "--quiet" } }} \
         --build-context alpine=docker-image://alpine:{{ ALPINE_VERSION }} \
+        --build-arg FISH_VERSION={{ FISH_VERSION }} \
+        --build-arg BUILD_FROM_SOURCE={{ BUILD_FROM_SOURCE }} \
         --file ./Dockerfile \
-        --tag=fish-{{ FISH_VERSION }} \
+        --tag=fish-{{ FISH_VERSION }}.alpine-{{ ALPINE_VERSION }} \
         ./
 
-run FISH_VERSION:
+run FISH_VERSION ALPINE_VERSION:
     docker run \
         --interactive \
         --tty \
-    fish-{{ FISH_VERSION }}:latest
+        fish-{{ FISH_VERSION }}.alpine-{{ ALPINE_VERSION }}
 
-test FISH_VERSION:
-    docker run \
-        --rm \
-        fish-{{ FISH_VERSION }} \
-        'fish --version | grep {{ FISH_VERSION }}'
+test FISH_VERSION ALPINE_VERSION:
+    #!/usr/bin/env fish
+    set expected "{{ FISH_VERSION }}"
+    set actual (docker run --rm fish-{{ FISH_VERSION }}.alpine-{{ ALPINE_VERSION }} 'fish --version')
+    
+    if echo "$actual" | grep -q "$expected"
+        echo (set_color --bold --background green)"✓ fish version $expected"(set_color normal)" is correctly installed"
+    else
+        echo (set_color --bold --background red)"✗ $actual"(set_color normal)" is installed, while expecting "(set_color --background green)"$expected"(set_color normal)
+        exit 1
+    end
 
-build-3-0-2 verbose="false": (build "3.11" "3.0.2" verbose)
-run-3-0-2: (run "3.0.2")
-
-build-3-1-2 verbose="false": (build "3.13" "3.1.2" verbose)
-run-3-1-2: (run "3.1.2")
-
-build-3-2-2 verbose="false": (build "3.14" "3.2.2" verbose)
-run-3-2-2: (run "3.2.2")
-
-build-3-3-1 verbose="false": (build "3.15" "3.3.1" verbose)
-run-3-3-1: (run "3.3.1")
-
-build-3-4-1 verbose="false": (build "3.16" "3.4.1" verbose)
-run-3-4-1: (run "3.4.1")
-
-build-3-5-1 verbose="false": (build "3.17" "3.5.1" verbose)
-run-3-5-1: (run "3.5.1")
-
-build-3-6-1 verbose="false": (build "3.18" "3.6.1" verbose)
-run-3-6-1: (run "3.6.1")
-
-build-3-6-3 verbose="false": (build "3.19" "3.6.3" verbose)
-run-3-6-3: (run "3.6.3")
-
-build-3-7-1 verbose="false": (build "3.21" "3.7.1" verbose)
-run-3-7-1: (run "3.7.1")
-
-build-4-0-2 verbose="false": (build "edge" "4.0.2" verbose)
-run-4-0-2: (run "4.0.2")
-
-# build-3-6-2 verbose="false": (build "edge" "3.6.2" verbose)
-# run-3-6-2: (run "3.6.2")
+# Build and test in one command
+build-and-test FISH_VERSION ALPINE_VERSION: (build FISH_VERSION ALPINE_VERSION) (test FISH_VERSION ALPINE_VERSION)
