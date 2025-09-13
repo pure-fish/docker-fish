@@ -1,4 +1,4 @@
-SHELL = /usr/bin/fish
+SHELL = fish
 
 CONTAINER_USER = nemo
 
