@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-image:
-    name: Build and push fish image
+    name: Build and push # fish image
     runs-on: ubuntu-latest
     strategy:
       matrix:
