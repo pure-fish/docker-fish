@@ -17,8 +17,8 @@ jobs:
     strategy:
       matrix:
         version: [
-            # fish version, alpine version, and whether to build from source
-            { fish: 3.0.2, alpine: 3.11 },
+            # fish version, alpine version, and whether to build using binary
+            # { fish: 3.0.2, alpine: 3.11 }, # no support for `just`
             { fish: 3.1.2, alpine: 3.13 },
             { fish: 3.2.2, alpine: 3.14 },
             { fish: 3.3.1, alpine: 3.15 },
@@ -28,9 +28,9 @@ jobs:
             { fish: 3.6.3, alpine: 3.19 },
             { fish: 3.7.1, alpine: 3.21 },
             { fish: 4.0.2, alpine: 3.22 },
-            # New versions built from source
-            { fish: 4.1.2, alpine: "edge", source: true },
-            { fish: 4.2.1, alpine: "edge", source: true },
+            # New versions built with pre-built binary 
+            { fish: 4.1.2, alpine: "edge", binary: true },
+            { fish: 4.2.1, alpine: "edge", binary: true },
           ]
       fail-fast: false
     steps:
@@ -78,7 +78,7 @@ jobs:
             alpine=docker-image://alpine:${{ matrix.version.alpine }}
           build-args: |
             FISH_VERSION=${{ matrix.version.fish }}
-            BUILD_FROM_SOURCE=${{ matrix.version.source == true }}
+            BUILD_USING_BINARY=${{ matrix.version.binary == true }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
