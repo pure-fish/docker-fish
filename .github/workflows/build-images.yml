@@ -17,6 +17,7 @@ jobs:
     strategy:
       matrix:
         version: [
+            # fish version, alpine version, and whether to build from source
             { fish: 3.0.2, alpine: 3.11 },
             { fish: 3.1.2, alpine: 3.13 },
             { fish: 3.2.2, alpine: 3.14 },
@@ -29,6 +30,7 @@ jobs:
             { fish: 4.0.2, alpine: 3.22 },
             # New versions built from source
             { fish: 4.1.2, alpine: "edge", source: true },
+            { fish: 4.2.1, alpine: "edge", source: true },
           ]
       fail-fast: false
     steps:

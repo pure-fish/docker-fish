@@ -25,26 +25,32 @@ jorgebucaran/fishtape
 
 ### Versions
 
-We provide the following versions of Fish, thanks to Alpine package. Simplify specify the fish version as the tag image:
+Simply specify the fish version as the tag image:
 
 ```console
 ❯ docker run --interactive --tty --rm purefish/docker-fish:3.5.1
 ```
 
+We provide the following versions of Fish, thanks to Alpine package. 
+
+> :question: If you need a specific version, please submit an issue or a pull request.
+
+
 <!-- see: https://pkgs.alpinelinux.org/packages?name=fish&branch=edge&repo=&arch=&maintainer= -->
-| Fish    | Alpine           |
-| ------- | ---------------- |
-| `3.0.2` | [`3.11`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.11)           |
-| `3.1.2` | [`3.13`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.13)           |
-| `3.2.2` | [`3.14`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.14)           |
-| `3.3.1` | [`3.15`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.15)           |
-| `3.4.1` | [`3.16`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.16)           |
-| `3.5.1` | [`3.17`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.17)           |
-| `3.6.1` | [`3.18`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.18)           |
-| `3.6.3` | [`3.19`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.19)           |
-| `3.7.1` | [`3.21`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.21)           |
-| `4.0.2` | [`3.22`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.22)           |
-| `4.1.2` | [`edge`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=edge), `latest` |
+| Fish    | Alpine           | Origin |
+| ------- | ---------------- | ------ |
+| `3.0.2` | [`3.11`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.11)           | package | 
+| `3.1.2` | [`3.13`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.13)           | package | 
+| `3.2.2` | [`3.14`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.14)           | package | 
+| `3.3.1` | [`3.15`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.15)           | package | 
+| `3.4.1` | [`3.16`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.16)           | package | 
+| `3.5.1` | [`3.17`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.17)           | package | 
+| `3.6.1` | [`3.18`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.18)           | package | 
+| `3.6.3` | [`3.19`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.19)           | package | 
+| `3.7.1` | [`3.21`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.21)           | package | 
+| `4.0.2` | [`3.22`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.22)           | package | 
+| `4.1.2` | [`edge`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=edge), | source  |
+| `4.2.1` | [`edge`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=edge), `latest` | source  |
 
 <!-- | `3.6.1` | `edge`           | -->
 
