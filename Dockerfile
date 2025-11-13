@@ -7,30 +7,24 @@ FROM alpine:latest as base
 
 # Build arguments
 ARG FISH_VERSION=""
-ARG BUILD_FROM_SOURCE="false"
+ARG BUILD_USING_BINARY="false"
+ARG RELEASE_URL="https://github.com/fish-shell/fish-shell/releases/download"
 
 # Build stage for Fish from source
 FROM base as fish-builder
-RUN if [ "$BUILD_FROM_SOURCE" = "true" ]; then \
+WORKDIR /tmp
+RUN if [ "$BUILD_USING_BINARY" = "true" ]; then \
         apk add --no-cache --virtual .build-deps \
-            build-base \
-            cmake \
-            ncurses-dev \
-            pcre2-dev \
-            gettext-dev \
-            wget \
+            curl \
             tar \
-            rust \
-            cargo && \
-        wget -O fish-${FISH_VERSION}.tar.xz "https://github.com/fish-shell/fish-shell/releases/download/${FISH_VERSION}/fish-${FISH_VERSION}.tar.xz" && \
-        tar -xf fish-${FISH_VERSION}.tar.xz && \
-        cd fish-${FISH_VERSION} && \
-        cmake -DCMAKE_INSTALL_PREFIX=/usr/local . && \
-        make && \
-        make install && \
-        apk del .build-deps; \
+            xz \
+        && curl \
+            --location \
+            "${RELEASE_URL}/${FISH_VERSION}/fish-${FISH_VERSION}-linux-x86_64.tar.xz" \
+        | tar -xJ \
+        && cp ./fish /usr/local/bin/ \
+        && apk del .build-deps; \
     fi
-
 # Final stage
 FROM base as with-fish
 
@@ -42,14 +36,14 @@ COPY --from=fish-builder /usr/local /usr/local
 RUN apk add --no-cache \
     coreutils \
     curl \
-    make \
+    just \
     git \
     bash \
     libgcc \
     ncurses \
     pcre2 \
     gettext && \
-    if [ "$BUILD_FROM_SOURCE" != "true" ]; then \
+    if [ "$BUILD_USING_BINARY" != "true" ]; then \
         apk add --no-cache fish; \
     fi
 
@@ -58,17 +52,16 @@ ENV PATH="/usr/local/bin:$PATH"
 
 FROM with-fish AS final
 WORKDIR /workspace
-COPY ./makefile /workspace/
-RUN echo "$PATH"
-RUN ls /usr/local/ /usr/local/bin/
-RUN make print-fish-version 
-RUN make add-nemo-user 
-RUN make move-to-container-user-home
+COPY ./justfile /workspace/
+RUN just \
+    print-fish-version \
+    add-nemo-user \
+    move-to-container-user-home
 
 # As `nemo` user
 USER nemo
 WORKDIR /home/nemo
-RUN make \
+RUN just \
     install-fisher \
     install-fishtape
 
