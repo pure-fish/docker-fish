@@ -74,3 +74,17 @@ install-fishtape:
     #!/usr/bin/env fish
     fisher install jorgebucaran/fishtape \
     && printf "\nUsing \e[38;5;27mFishtape %s\e[m\n\n" (fishtape --version | awk '{print $NF}')
+
+tag-version FISH_VERSION ALPINE_VERSION COMMIT_HASH="HEAD":
+    #!/usr/bin/env fish
+    echo "{{ FISH_VERSION }} {{ ALPINE_VERSION }}"
+    if test -z "{{ FISH_VERSION }}" -o -z "{{ ALPINE_VERSION }}"
+        printf "❌ FISH_VERSION and ALPINE_VERSION must be set\n"
+        exit 1
+    else
+        git tag "fish-{{ FISH_VERSION }}.alpine-{{ ALPINE_VERSION }}" --message "" {{COMMIT_HASH}};
+        and begin
+            printf "✅ Tagged fish-{{ FISH_VERSION }}.alpine-{{ ALPINE_VERSION }}\n"
+            git push --tags
+        end
+    end
