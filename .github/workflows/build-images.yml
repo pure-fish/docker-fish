@@ -9,6 +9,13 @@ on:
     types:
       - opened
       - synchronize
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: 'Force rebuild all images'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build-image:
@@ -69,7 +76,25 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
+      - name: Check if image exists on Docker Hub
+        id: check-image
+        run: |
+          IMAGE_NAME="purefish/docker-fish:${{ matrix.version.fish }}"
+          FORCE_REBUILD=${{ inputs.force_rebuild || false }}
+          
+          if [ "$FORCE_REBUILD" = "true" ]; then
+            echo "🧹 Force rebuild enabled, proceeding with build"
+            echo "SKIP_BUILD=false" >> "$GITHUB_OUTPUT"
+          elif docker manifest inspect $IMAGE_NAME >/dev/null 2>&1; then
+            echo "🛑 Image already exists, skipping build"
+            echo "SKIP_BUILD=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "🆕 Image does not exist, proceeding with build"
+            echo "SKIP_BUILD=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build fish:${{ matrix.version.fish }} image
+        if: steps.check-image.outputs.SKIP_BUILD == 'false'
         uses: docker/build-push-action@v5
         with:
           push: true
