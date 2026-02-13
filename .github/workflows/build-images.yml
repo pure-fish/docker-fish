@@ -38,7 +38,7 @@ jobs:
             # New versions built with pre-built binary 
             { fish: 4.1.2, alpine: "edge", binary: true },
             { fish: 4.2.1, alpine: "edge", binary: true },
-            { fish: 4.3.2, alpine: "edge" },
+            { fish: 4.4.4, alpine: "edge" },
           ]
       fail-fast: false
     steps:
