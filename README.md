@@ -38,7 +38,7 @@ We provide the following versions of Fish, thanks to Alpine package.
 <!-- see: https://pkgs.alpinelinux.org/packages?name=fish&branch=edge&repo=&arch=&maintainer= -->
 | Fish    | Alpine                                                                             | Origin  |
 | ------- | ---------------------------------------------------------------------------------- | ------- |
-| `4.4.4` | `latest`, [`edge`][edge]                                                           | package |
+| `4.4.4` | `latest`, [`edge`][edge]                                                           | binary |
 | `4.3.2` | `latest`, [`edge`][edge]                                                           | package |
 | `4.2.1` | [`edge`][edge]                                                                     | binary  |
 | `4.1.2` | [`edge`][edge]                                                                     | binary  |
