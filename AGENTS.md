@@ -1,6 +1,7 @@
 # AGENTS.md
 
 * work in English
+* Be consise
 
 ## Setup commands
 
