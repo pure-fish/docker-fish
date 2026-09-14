@@ -69,6 +69,10 @@ We provide the following versions of Fish, thanks to Alpine package.
 * See [CONTRIBUTING.md] ;
 * See [RELEASE.md].
 
+To rebuild one version from the GitHub Actions workflow, run it manually and set
+`fish_version` to the desired version, for example `4.7.1`. Leave it as `all` to
+use the normal image-exists checks for every version.
+
 ## Thanks
 
 * @andreiborisov who work on the first version of [docker-fish](https://github.com/andreiborisov/docker-fish).
