@@ -31,6 +31,7 @@ jobs:
         version: [
             # fish version, alpine version, and whether to build using binary
             # { fish: 3.0.2, alpine: 3.11 }, # no support for `just`
+            # New versions built with pre-built binary 
             { fish: 3.1.2, alpine: 3.13 },
             { fish: 3.2.2, alpine: 3.14 },
             { fish: 3.3.1, alpine: 3.15 },
@@ -40,15 +41,15 @@ jobs:
             { fish: 3.6.3, alpine: 3.19 },
             { fish: 3.7.1, alpine: 3.21 },
             { fish: 4.0.2, alpine: 3.22 },
-            # New versions built with pre-built binary 
-            { fish: 4.5.0, alpine: "edge", binary: true },
-            { fish: 4.7.0, alpine: "edge", binary: true },
-            { fish: 4.8.1, alpine: "edge", binary: true },
             { fish: 4.1.2, alpine: "edge", binary: true },
             { fish: 4.2.1, alpine: "edge", binary: true },
             { fish: 4.4.0, alpine: "edge", binary: true },
+            { fish: 4.5.0, alpine: "edge", binary: true },
             { fish: 4.6.0, alpine: 3.24, binary: true },
+            { fish: 4.7.0, alpine: "edge", binary: true },
             { fish: 4.7.1, alpine: "edge", binary: true },
+            { fish: 4.8.1, alpine: "edge", binary: true },
+            { fish: 4.9.0, alpine: "edge", binary: true },
           ]
       fail-fast: false
     steps:
