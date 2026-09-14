@@ -43,6 +43,7 @@ We provide the following versions of Fish, thanks to Alpine package.
 | `4.9.1` | `latest`, [`edge`][edge]                                                           | binary |
 | `4.9.0` | `latest`, [`edge`][edge]                                                           | binary |
 | `4.8.1` | `latest`, [`edge`][edge]                                                           | binary |
+| `4.8.0` | `latest`, [`edge`][edge]                                                           | binary |
 | `4.7.1` | `latest`, [`edge`][edge]                                                           | binary  |
 | `4.7.0` | `latest`, [`edge`][edge]                                                           | binary |
 | `4.6.0` | [`3.24`](https://pkgs.alpinelinux.org/packages?name=fish&arch=x86_64&branch=v3.24) | binary  |
