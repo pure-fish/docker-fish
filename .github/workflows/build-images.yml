@@ -16,6 +16,11 @@ on:
         required: false
         default: false
         type: boolean
+      fish_version:
+        description: 'Rebuild only this Fish version (leave empty to build all)'
+        required: false
+        default: ''
+        type: string
 
 jobs:
   build-image:
@@ -44,14 +49,28 @@ jobs:
           ]
       fail-fast: false
     steps:
+      - name: Check if matrix contains fish_version to rebuild
+        id: version-filter
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && \
+             [ -n "${{ inputs.fish_version }}" ] && \
+             [ "${{ inputs.fish_version }}" != "${{ matrix.version.fish }}" ]; then
+            echo "MATCH=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "MATCH=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout
+        if: steps.version-filter.outputs.MATCH == 'true'
         uses: actions/checkout@v4
 
       - name: Detect latest item from matrix
+        if: steps.version-filter.outputs.MATCH == 'true'
         id: detect-latest-tag
         run: echo "IS_LATEST=$([ $(expr ${{ strategy.job-index }} + 1) = ${{ strategy.job-total }} ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
       - name: Docker meta
+        if: steps.version-filter.outputs.MATCH == 'true'
         id: meta
         uses: docker/metadata-action@v5.5.0
         with:
@@ -67,23 +86,27 @@ jobs:
             latest=false
 
       - name: Set up QEMU
+        if: steps.version-filter.outputs.MATCH == 'true'
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
+        if: steps.version-filter.outputs.MATCH == 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
+        if: steps.version-filter.outputs.MATCH == 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Check if image exists on Docker Hub
+        if: steps.version-filter.outputs.MATCH == 'true'
         id: check-image
         run: |
           IMAGE_NAME="purefish/docker-fish:${{ matrix.version.fish }}"
-          FORCE_REBUILD=${{ inputs.force_rebuild || false }}
-          
+          FORCE_REBUILD=${{ inputs.force_rebuild || steps.version-filter.outputs.MATCH == 'true' || false }}
+
           if [ "$FORCE_REBUILD" = "true" ]; then
             echo "🧹 Force rebuild enabled, proceeding with build"
             echo "SKIP_BUILD=false" >> "$GITHUB_OUTPUT"
@@ -96,7 +119,7 @@ jobs:
           fi
 
       - name: Build fish:${{ matrix.version.fish }} image
-        if: steps.check-image.outputs.SKIP_BUILD == 'false'
+        if: steps.version-filter.outputs.MATCH == 'true' && steps.check-image.outputs.SKIP_BUILD == 'false'
         uses: docker/build-push-action@v5
         with:
           push: true
@@ -112,6 +135,7 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
 
       - name: Test installed version match expected ${{ matrix.version.fish }}
+        if: steps.version-filter.outputs.MATCH == 'true'
         run: |
           docker run \
             --rm \
