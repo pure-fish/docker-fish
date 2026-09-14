@@ -70,7 +70,7 @@ jobs:
 
       - name: Checkout
         if: steps.version-filter.outputs.MATCH == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Detect latest item from matrix
         if: steps.version-filter.outputs.MATCH == 'true'
@@ -80,7 +80,7 @@ jobs:
       - name: Docker meta
         if: steps.version-filter.outputs.MATCH == 'true'
         id: meta
-        uses: docker/metadata-action@v5.5.0
+        uses: docker/metadata-action@v5
         with:
           # list of Docker images to use as base name for tags
           images: |
@@ -128,7 +128,7 @@ jobs:
 
       - name: Build fish:${{ matrix.version.fish }} image
         if: steps.version-filter.outputs.MATCH == 'true' && steps.check-image.outputs.SKIP_BUILD == 'false'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           context: .
