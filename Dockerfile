@@ -26,14 +26,6 @@ RUN if [ "$BUILD_USING_BINARY" = "true" ]; then \
             --location \
             "${RELEASE_URL}/${FISH_VERSION}/fish-${FISH_VERSION}-linux-x86_64.tar.xz" \
         | tar -xJ \
-        || { \
-        echo "Failed to download binary, trying alternative URL" \
-        && curl \
-            --fail-with-body \
-            --location \
-            "${RELEASE_URL}/${FISH_VERSION}/fish-${FISH_VERSION}.tar.xz" \
-        | tar -xJ; \
-        } \
         && cp ./fish /usr/local/bin/ \
         && apk del .build-deps; \
     fi
