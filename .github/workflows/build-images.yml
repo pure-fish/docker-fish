@@ -32,28 +32,31 @@ jobs:
             # fish version, alpine version, and whether to build using binary
             # { fish: 3.0.2, alpine: 3.11 }, # no support for `just`
             # New versions built with pre-built binary 
-            { fish: 3.1.2, alpine: 3.13 },
-            { fish: 3.2.2, alpine: 3.14 },
-            { fish: 3.3.1, alpine: 3.15 },
-            { fish: 3.4.1, alpine: 3.16 },
-            { fish: 3.5.1, alpine: 3.17 },
-            { fish: 3.6.1, alpine: 3.18 },
-            { fish: 3.6.3, alpine: 3.19 },
-            { fish: 3.7.1, alpine: 3.21 },
-            { fish: 4.0.2, alpine: 3.22 },
-            { fish: 4.1.2, alpine: "edge", binary: true },
-            { fish: 4.2.1, alpine: "edge", binary: true },
-            { fish: 4.4.0, alpine: "edge", binary: true },
-            { fish: 4.5.0, alpine: "edge", binary: true },
-            { fish: 4.6.0, alpine: 3.24, binary: true },
-            { fish: 4.7.0, alpine: "edge", binary: true },
-            { fish: 4.7.1, alpine: "edge", binary: true },
-            { fish: 4.8.0, alpine: "edge", binary: true },
-            { fish: 4.8.1, alpine: "edge", binary: true },
-            { fish: 4.9.0, alpine: "edge", binary: true },
-            { fish: 4.9.1, alpine: "edge", binary: true },
-            { fish: 4.9.2, alpine: "edge", binary: true },
-            { fish: 4.9.3, alpine: "edge", binary: true },
+            { fish: 3.1.2, alpine: 3.13,    binary: false  },
+            { fish: 3.2.2, alpine: 3.14,    binary: false  },
+            { fish: 3.3.1, alpine: 3.15,    binary: false  },
+            { fish: 3.4.1, alpine: 3.16,    binary: false  },
+            { fish: 3.5.1, alpine: 3.17,    binary: false  },
+            { fish: 3.6.0, alpine: 3.18,    binary: true   }, # for Debian 12
+            { fish: 3.6.1, alpine: 3.18,    binary: false  },
+            { fish: 3.6.3, alpine: 3.19,    binary: false  },
+            { fish: 3.7.0, alpine: 3.21,    binary: false  }, # for Ubuntu 24.04 LTS
+            { fish: 3.7.1, alpine: 3.21,    binary: false  }, # for Entreprise Linux 10
+            { fish: 4.0.2, alpine: 3.22,    binary: false  }, # for Debian 13, Fedora 43
+            { fish: 4.1.2, alpine: "edge",  binary: true   },
+            { fish: 4.2.0, alpine: 3.24,    binary: true   }, # for Entreprise Linux 10
+            { fish: 4.2.1, alpine: "edge",  binary: true   }, # for Ubuntu 26.04 LTS 
+            { fish: 4.4.0, alpine: "edge",  binary: true   },
+            { fish: 4.5.0, alpine: "edge",  binary: true   },
+            { fish: 4.6.0, alpine: 3.24,    binary: true   }, # for Fedora 44
+            { fish: 4.7.0, alpine: "edge",  binary: true   },
+            { fish: 4.7.1, alpine: "edge",  binary: true   },
+            { fish: 4.8.0, alpine: "edge",  binary: true   },
+            { fish: 4.8.1, alpine: "edge",  binary: true   },
+            { fish: 4.9.0, alpine: "edge",  binary: true   },
+            { fish: 4.9.1, alpine: "edge",  binary: true   },
+            { fish: 4.9.2, alpine: "edge",  binary: true   },
+            { fish: 4.9.3, alpine: "edge",  binary: true   },
           ]
       fail-fast: false
     steps:
