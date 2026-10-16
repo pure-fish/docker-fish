@@ -10,24 +10,30 @@ ARG FISH_VERSION=""
 ARG BUILD_USING_BINARY="false"
 ARG RELEASE_URL="https://github.com/fish-shell/fish-shell/releases/download"
 
-# for Hadolint DL4006
-SHELL ["/bin/ash", "-eo", "pipefail", "-c"] 
-
-
 # Build stage for Fish from source
 FROM base AS fish-builder
 WORKDIR /tmp
- # we use different image version so we can't pin packages versions
-# hadolint ignore=DL3018
+# we use different image version so we can't pin packages versions
+# hadolint ignore=DL3018,DL4006
 RUN if [ "$BUILD_USING_BINARY" = "true" ]; then \
         apk add --no-cache --virtual .build-deps \
             curl \
             tar \
             xz \
-        && curl \
+        && \
+            curl \
+            --fail \
             --location \
             "${RELEASE_URL}/${FISH_VERSION}/fish-${FISH_VERSION}-linux-x86_64.tar.xz" \
         | tar -xJ \
+        || { \
+        echo "Failed to download binary, trying alternative URL" \
+        && curl \
+            --fail-with-body \
+            --location \
+            "${RELEASE_URL}/${FISH_VERSION}/fish-${FISH_VERSION}.tar.xz" \
+        | tar -xJ; \
+        } \
         && cp ./fish /usr/local/bin/ \
         && apk del .build-deps; \
     fi
