@@ -1,6 +1,21 @@
 version: 2
 updates:
   - package-ecosystem: "docker"
-    directory: "/fish"
+    directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+      
