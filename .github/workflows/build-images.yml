@@ -57,9 +57,10 @@ jobs:
       - name: Check if matrix contains fish_version to rebuild
         id: version-filter
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && \
-             [ -n "${{ inputs.fish_version }}" ] && \
-             [ "${{ inputs.fish_version }}" != "${{ matrix.version.fish }}" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] \
+          && [ -n "${{ inputs.fish_version }}" ] \
+          && [ "${{ inputs.fish_version }}" != "${{ matrix.version.fish }}" ]; \
+          then
             echo "MATCH=false" >> "$GITHUB_OUTPUT"
           else
             echo "MATCH=true" >> "$GITHUB_OUTPUT"
@@ -138,6 +139,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
+          sbom: true # add inventory of components used to build image https://docs.docker.com/build/ci/github-actions/attestations/
+          provenance: mode=max # as we are OSS
 
       - name: Test installed version match expected ${{ matrix.version.fish }}
         if: steps.version-filter.outputs.MATCH == 'true'
