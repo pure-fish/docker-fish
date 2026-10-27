@@ -128,12 +128,14 @@ jobs:
             echo "SKIP_BUILD=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build fish:${{ matrix.version.fish }} image
-        id: build
+      - name: Build fish:${{ matrix.version.fish }} and export to internal cache
         if: steps.version-filter.outputs.MATCH == 'true' && steps.check-image.outputs.SKIP_BUILD == 'false'
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
-          push: true
+          # to test with local images during PRs
+          load: true
+          push: false
+          # end local image testing for PRs
           context: .
           file: ./Dockerfile
           build-contexts: |
@@ -143,7 +145,7 @@ jobs:
             BUILD_USING_BINARY=${{ matrix.version.binary == true }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          # enable SBOM and provenance for all builds
           sbom: true # add inventory of components used to build image https://docs.docker.com/build/ci/github-actions/attestations/
           provenance: mode=max # as we are OSS
 
@@ -154,6 +156,26 @@ jobs:
             --rm \
             purefish/docker-fish:${{ matrix.version.fish }} \
               'fish --version | grep ${{ matrix.version.fish }}'
+
+      - name: Build fish:${{ matrix.version.fish }} image
+        id: build
+        if: github.event_name != 'pull_request' && steps.version-filter.outputs.MATCH == 'true' && steps.check-image.outputs.SKIP_BUILD == 'false'
+        uses: docker/build-push-action@v7
+        with:
+          platforms: 'linux/amd64,linux/arm64,linux/arm/v7'
+          push: true
+          context: .
+          file: ./Dockerfile
+          build-contexts: |
+            alpine=docker-image://alpine:${{ matrix.version.alpine }}
+          build-args: |
+            FISH_VERSION=${{ matrix.version.fish }}
+            BUILD_USING_BINARY=${{ matrix.version.binary == true }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # enable SBOM and provenance for all builds
+          sbom: true # add inventory of components used to build image https://docs.docker.com/build/ci/github-actions/attestations/
+          provenance: mode=max # as we are OSS
 
       - name: Install cosign
         # Skip PRs from forks as they get no id-token for keyless signing
