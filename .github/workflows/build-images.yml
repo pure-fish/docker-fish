@@ -110,11 +110,12 @@ jobs:
         id: image-exist
         run: |
           IMAGE_NAME="purefish/docker-fish:${{ matrix.version.fish }}"
+          BUILD=true
 
           # Abort if the image already exists on Docker Hub
           if docker manifest inspect $IMAGE_NAME >/dev/null 2>&1; then
             echo "🛑 Image already exists, skipping build"
-            exit 0
+            BUILD=false
           fi
 
           FORCE_REBUILD=${{ inputs.force_rebuild || false }}
@@ -124,15 +125,22 @@ jobs:
             echo "🆕 Image does not exist, proceeding with build"
           fi
 
+          echo "BUILD=$BUILD" >> "$GITHUB_OUTPUT"
           echo "PUBLISH=${{ github.event_name != 'pull_request' }}" >> "$GITHUB_OUTPUT"
 
 
       - name: Build fish:${{ matrix.version.fish }} and export to internal cache
+        if: steps.image-exist.outputs.BUILD == 'true'
         uses: docker/build-push-action@v7
         with:
           # to test with local images during PRs
           load: true
           push: false
+          platforms: linux/amd64
+          # No attestations for the local test image: they turn the result into
+          # a manifest list, which the docker exporter (`load: true`) cannot load.
+          sbom: false
+          provenance: false
           # end local image testing for PRs
           context: .
           file: ./Dockerfile
@@ -144,10 +152,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # enable SBOM and provenance for all builds
-          sbom: true # add inventory of components used to build image https://docs.docker.com/build/ci/github-actions/attestations/
-          provenance: mode=max # as we are OSS
 
       - name: Test installed version match expected ${{ matrix.version.fish }}
+        if: steps.image-exist.outputs.BUILD == 'true'
         run: |
           docker run \
             --rm \
