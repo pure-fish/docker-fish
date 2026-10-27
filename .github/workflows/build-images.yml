@@ -12,19 +12,19 @@ on:
   workflow_dispatch:
     inputs:
       force_rebuild:
-        description: 'Force rebuild all images'
+        description: "Force rebuild all images"
         required: false
         default: false
         type: boolean
       fish_version:
-        description: 'Rebuild only this Fish version (leave empty to build all)'
+        description: "Rebuild only this Fish version (leave empty to build all)"
         required: false
-        default: ''
+        default: ""
         type: string
 
 jobs:
   build-image:
-    permissions: 
+    permissions:
       contents: read
       id-token: write # OIDC token for keyless signing
 
@@ -34,27 +34,27 @@ jobs:
       matrix:
         version: [
             # fish version, alpine version, and whether to build using binary
-            # New versions built with pre-built binary 
+            # New versions built with pre-built binary
             # { fish: 3.6.0, alpine: 3.18,    binary: true   }, # for Debian 12 but no binary before 4.x
-            { fish: 3.6.1, alpine: 3.18,    binary: false  }, # fallback for Debian 12
-            { fish: 3.6.3, alpine: 3.19,    binary: false  },
+            { fish: 3.6.1, alpine: 3.18, binary: false }, # fallback for Debian 12
+            { fish: 3.6.3, alpine: 3.19, binary: false },
             # { fish: 3.7.0, alpine: 3.21,    binary: true  }, # for Ubuntu 24.04 LTS but no binary before 4.x
-            { fish: 3.7.1, alpine: 3.21,    binary: false  }, # for Entreprise Linux 10, fallback for Ubuntu 24.04 LTS
-            { fish: 4.0.2, alpine: 3.22,    binary: false  }, # for Debian 13, Fedora 43
-            { fish: 4.1.2, alpine: "edge",  binary: true   },
-            { fish: 4.2.0, alpine: 3.24,    binary: true   }, # for Entreprise Linux 10
-            { fish: 4.2.1, alpine: "edge",  binary: true   }, # for Ubuntu 26.04 LTS 
-            { fish: 4.4.0, alpine: "edge",  binary: true   },
-            { fish: 4.5.0, alpine: "edge",  binary: true   },
-            { fish: 4.6.0, alpine: 3.24,    binary: true   }, # for Fedora 44
-            { fish: 4.7.0, alpine: "edge",  binary: true   },
-            { fish: 4.7.1, alpine: "edge",  binary: true   },
-            { fish: 4.8.0, alpine: "edge",  binary: true   },
-            { fish: 4.8.1, alpine: "edge",  binary: true   },
-            { fish: 4.9.0, alpine: "edge",  binary: true   },
-            { fish: 4.9.1, alpine: "edge",  binary: true   },
-            { fish: 4.9.2, alpine: "edge",  binary: true   },
-            { fish: 4.9.3, alpine: "edge",  binary: true   },
+            { fish: 3.7.1, alpine: 3.21, binary: false }, # for Entreprise Linux 10, fallback for Ubuntu 24.04 LTS
+            { fish: 4.0.2, alpine: 3.22, binary: false }, # for Debian 13, Fedora 43
+            { fish: 4.1.2, alpine: "edge", binary: true },
+            { fish: 4.2.0, alpine: 3.24, binary: true }, # for Entreprise Linux 10
+            { fish: 4.2.1, alpine: "edge", binary: true }, # for Ubuntu 26.04 LTS
+            { fish: 4.4.0, alpine: "edge", binary: true },
+            { fish: 4.5.0, alpine: "edge", binary: true },
+            { fish: 4.6.0, alpine: 3.24, binary: true }, # for Fedora 44
+            { fish: 4.7.0, alpine: "edge", binary: true },
+            { fish: 4.7.1, alpine: "edge", binary: true },
+            { fish: 4.8.0, alpine: "edge", binary: true },
+            { fish: 4.8.1, alpine: "edge", binary: true },
+            { fish: 4.9.0, alpine: "edge", binary: true },
+            { fish: 4.9.1, alpine: "edge", binary: true },
+            { fish: 4.9.2, alpine: "edge", binary: true },
+            { fish: 4.9.3, alpine: "edge", binary: true },
           ]
       fail-fast: false
     steps:
