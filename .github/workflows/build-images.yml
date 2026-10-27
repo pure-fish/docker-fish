@@ -110,9 +110,9 @@ jobs:
         id: image-exist
         run: |
           IMAGE_NAME="purefish/docker-fish:${{ matrix.version.fish }}"
-          BUILD=true
 
           # Abort if the image already exists on Docker Hub
+          BUILD=true
           if docker manifest inspect $IMAGE_NAME >/dev/null 2>&1; then
             echo "🛑 Image already exists, skipping build"
             BUILD=false
@@ -125,8 +125,13 @@ jobs:
             echo "🆕 Image does not exist, proceeding with build"
           fi
 
+          PUBLISH=false
+          if [ "$BUILD" = true ] && [ "${GITHUB_EVENT_NAME}" != "pull_request" ]; then
+            PUBLISH=true
+          fi
+
           echo "BUILD=$BUILD" >> "$GITHUB_OUTPUT"
-          echo "PUBLISH=${{ github.event_name != 'pull_request' }}" >> "$GITHUB_OUTPUT"
+          echo "PUBLISH=$PUBLISH" >> "$GITHUB_OUTPUT"
 
 
       - name: Build fish:${{ matrix.version.fish }} and export to internal cache
