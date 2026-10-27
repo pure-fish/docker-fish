@@ -24,6 +24,10 @@ on:
 
 jobs:
   build-image:
+    permissions: 
+      contents: read
+      id-token: write # OIDC token for keyless signing
+
     name: Build and push # fish image
     runs-on: ubuntu-latest
     strategy:
@@ -125,6 +129,7 @@ jobs:
           fi
 
       - name: Build fish:${{ matrix.version.fish }} image
+        id: build
         if: steps.version-filter.outputs.MATCH == 'true' && steps.check-image.outputs.SKIP_BUILD == 'false'
         uses: docker/build-push-action@v6
         with:
@@ -149,3 +154,18 @@ jobs:
             --rm \
             purefish/docker-fish:${{ matrix.version.fish }} \
               'fish --version | grep ${{ matrix.version.fish }}'
+
+      - name: Install cosign
+        # Skip PRs from forks as they get no id-token for keyless signing
+        if: github.event_name != 'pull_request' && steps.version-filter.outputs.MATCH == 'true' && steps.check-image.outputs.SKIP_BUILD == 'false'
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign image (keyless) # https://dev.to/n3wt0n/sign-your-container-images-with-cosign-github-actions-and-github-container-registry-3mni
+        if: github.event_name != 'pull_request' && steps.version-filter.outputs.MATCH == 'true' && steps.check-image.outputs.SKIP_BUILD == 'false'
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+          TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          for tag in $TAGS; do
+            cosign sign --yes "${tag%%:*}@${DIGEST}"
+          done
