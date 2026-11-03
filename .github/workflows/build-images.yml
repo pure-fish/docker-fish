@@ -65,22 +65,51 @@ jobs:
           && [ -n "${{ inputs.fish_version }}" ] \
           && [ "${{ inputs.fish_version }}" != "${{ matrix.version.fish }}" ]; \
           then
-            echo "Invalid fish version: ${{ inputs.fish_version }}"
-            exit 1 # cancel the workflow if the fish version is invalid
+            echo "MATCH=false" >> "$GITHUB_OUTPUT"
           else
             echo "MATCH=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Check if we need to build and publish the image
+        id: image-exist
+        env:
+          MATCH: ${{ steps.version-filter.outputs.MATCH }}
+          FORCE_REBUILD: ${{ inputs.force_rebuild || false }}
+        run: |
+          BUILD=false
+          if [ "$MATCH" = true ]; then
+            if [ "$FORCE_REBUILD" = true ]; then
+              echo "🧹 Force rebuild enabled, proceeding with build"
+              BUILD=true
+            elif docker manifest inspect "purefish/docker-fish:${{ matrix.version.fish }}" >/dev/null 2>&1; then
+              echo "🛑 Image already exists, skipping build"
+            else
+              echo "🆕 Image does not exist, proceeding with build"
+              BUILD=true
+            fi
+          fi
+
+          PUBLISH=false
+          if [ "$BUILD" = true ] && [ "${GITHUB_EVENT_NAME}" != "pull_request" ]; then
+            PUBLISH=true
+          fi
+
+          echo "BUILD=$BUILD" >> "$GITHUB_OUTPUT"
+          echo "PUBLISH=$PUBLISH" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
-        uses: actions/checkout@v5
+        if: steps.image-exist.outputs.BUILD == 'true'
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
       - name: Detect latest item from matrix
+        if: steps.image-exist.outputs.BUILD == 'true'
         id: detect-latest-tag
         run: echo "IS_LATEST=$([ $(expr ${{ strategy.job-index }} + 1) = ${{ strategy.job-total }} ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
       - name: Docker meta
+        if: steps.image-exist.outputs.BUILD == 'true'
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
           # list of Docker images to use as base name for tags
           images: |
@@ -94,49 +123,23 @@ jobs:
             latest=false
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        if: steps.image-exist.outputs.PUBLISH == 'true'
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        if: steps.image-exist.outputs.BUILD == 'true'
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        if: steps.image-exist.outputs.PUBLISH == 'true'
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-        # Must happen before we build 
-      - name: Check if we need to build and publish the image
-        id: image-exist
-        run: |
-          IMAGE_NAME="purefish/docker-fish:${{ matrix.version.fish }}"
-
-          # Abort if the image already exists on Docker Hub
-          BUILD=true
-          if docker manifest inspect $IMAGE_NAME >/dev/null 2>&1; then
-            echo "🛑 Image already exists, skipping build"
-            BUILD=false
-          fi
-
-          FORCE_REBUILD=${{ inputs.force_rebuild || false }}
-          if [ "$FORCE_REBUILD" = "true" ]; then
-            echo "🧹 Force rebuild enabled, proceeding with build"
-          else
-            echo "🆕 Image does not exist, proceeding with build"
-          fi
-
-          PUBLISH=false
-          if [ "$BUILD" = true ] && [ "${GITHUB_EVENT_NAME}" != "pull_request" ]; then
-            PUBLISH=true
-          fi
-
-          echo "BUILD=$BUILD" >> "$GITHUB_OUTPUT"
-          echo "PUBLISH=$PUBLISH" >> "$GITHUB_OUTPUT"
-
-
       - name: Build fish:${{ matrix.version.fish }} and export to internal cache
         if: steps.image-exist.outputs.BUILD == 'true'
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           # to test with local images during PRs
           load: true
@@ -169,7 +172,7 @@ jobs:
       - name: Build fish:${{ matrix.version.fish }} image
         id: build
         if: steps.image-exist.outputs.PUBLISH == 'true'
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           platforms: 'linux/amd64,linux/arm64,linux/arm/v7'
           push: true
@@ -189,7 +192,7 @@ jobs:
       - name: Install cosign
         # Skip PRs from forks as they get no id-token for keyless signing
         if: steps.image-exist.outputs.PUBLISH == 'true'
-        uses: sigstore/cosign-installer@v3
+        uses: sigstore/cosign-installer@7e8b541eb2e61bf99390e1afd4be13a184e9ebc5 # v3.10.1
 
       - name: Sign image (keyless) # https://dev.to/n3wt0n/sign-your-container-images-with-cosign-github-actions-and-github-container-registry-3mni
         if: steps.image-exist.outputs.PUBLISH == 'true'
