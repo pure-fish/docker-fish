@@ -70,9 +70,10 @@ install-fisher:
     && printf "\nUsing \e[38;5;27mFisher %s\e[m\n\n" (fisher --version | awk '{print $NF}')
 
 # Install Fishtape testing framework
-install-fishtape:
+install-fishtape FISHTAPE_VERSION="3.0.1":
     #!/usr/bin/env fish
-    fisher install jorgebucaran/fishtape \
+    echo "Installing Fishtape version {{ FISHTAPE_VERSION }}"
+    fisher install jorgebucaran/fishtape@"{{ FISHTAPE_VERSION }}" \
     && printf "\nUsing \e[38;5;27mFishtape %s\e[m\n\n" (fishtape --version | awk '{print $NF}')
 
 tag-version FISH_VERSION ALPINE_VERSION COMMIT_HASH="HEAD":
