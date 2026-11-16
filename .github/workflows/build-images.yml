@@ -159,8 +159,8 @@ jobs:
             BUILD_USING_BINARY=${{ matrix.version.binary == true }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # enable SBOM and provenance for all builds
 
+      # enable SBOM and provenance for all builds
       - name: Test installed version match expected ${{ matrix.version.fish }}
         if: steps.image-exist.outputs.BUILD == 'true'
         run: |
